@@ -1,133 +1,209 @@
-# Edge AI Object Detection
+# Edge AI Object Detection - Research Project
 
-Real-time object detection on low-power devices like Raspberry Pi — comparing lightweight AI models for speed, accuracy, and efficiency.
-
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
-![TensorFlow](https://img.shields.io/badge/TensorFlow%20Lite-2.13%2B-FF6F00.svg)
-![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi%204-c51a4a.svg)
+## Comparative Evaluation and Optimisation of Lightweight Convolutional Neural Networks for Real-Time Object Detection on Raspberry Pi Edge Devices
 
 ---
 
-## Why this project
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Hardware Requirements](#hardware-requirements)
+- [Software Requirements](#software-requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Running Experiments](#running-experiments)
+- [Expected Outputs](#expected-outputs)
+- [Troubleshooting](#troubleshooting)
+- [Research Metrics](#research-metrics)
 
-Running AI on a laptop or cloud GPU is easy. Running it on a $50 Raspberry Pi, in real time, is a completely different problem — every millisecond and megabyte counts. This project answers a practical question: **which lightweight model actually performs best on real edge hardware, and which optimization technique gives you the most speed without wrecking accuracy?**
+---
 
-It benchmarks 3 models × 4 optimization techniques = **12 full experiments**, each measured on real metrics: FPS, latency, accuracy, model size, energy use, and memory footprint.
+## 🎯 Overview
 
-## How it works
+This project provides a comprehensive framework for evaluating and optimizing lightweight CNN models for real-time object detection on edge devices, specifically the Raspberry Pi 4. It implements three models with four optimization variants each, resulting in 12 complete experiments with detailed performance metrics.
 
-```mermaid
-graph LR
-    A[Camera / Image Input] --> B[Model Loader]
-    B --> C{Model}
-    C --> M1[MobileNetV2]
-    C --> M2[SqueezeNet]
-    C --> M3[YOLOv4-tiny]
+### Models Implemented:
+1. **MobileNetV2** - Efficient architecture using depthwise separable convolutions
+2. **SqueezeNet** - Ultra-small parameter count with fire modules
+3. **YOLOv4-tiny** - Lightweight YOLO variant for real-time detection
 
-    M1 --> D[Optimizer]
-    M2 --> D
-    M3 --> D
+### Optimization Techniques:
+- **Baseline** - No optimization (reference performance)
+- **Quantization** - Post-training INT8 quantization
+- **Pruning** - Structured pruning with 50% sparsity
+- **Combined** - Pruning followed by quantization
 
-    D --> O1[Baseline]
-    D --> O2[Quantization]
-    D --> O3[Pruning]
-    D --> O4[Pruning + Quantization]
+---
 
-    O1 --> E[Evaluator]
-    O2 --> E
-    O3 --> E
-    O4 --> E
+## 🔧 Hardware Requirements
 
-    E --> F[Hardware Monitor<br/>CPU / RAM / Energy]
-    E --> G[Results<br/>FPS · Latency · mAP]
-    G --> H[Visualizations & CSV Report]
+### Minimum Requirements:
+- **Raspberry Pi 4** (4GB RAM recommended, 8GB ideal)
+- **MicroSD Card** (32GB minimum, Class 10)
+- **Power Supply** (5V 3A USB-C)
+- **Camera Module** (Pi Camera v2 or USB webcam)
+- **Cooling** (Heatsinks + fan recommended for sustained inference)
+
+### Optional Hardware:
+- Google Coral USB Accelerator (for Edge TPU support)
+- Official Raspberry Pi Touch Display
+- Pi Camera Module v2 (8MP)
+
+---
+
+## 💻 Software Requirements
+
+- **Raspberry Pi OS** (64-bit recommended)
+- **Python 3.9+**
+- **OpenCV 4.8+**
+- **TensorFlow Lite 2.13+**
+
+---
+
+## 📦 Installation
+
+### Step 1: Clone/Download the Project
+```bash
+cd ~/projects
+git clone <your-repo-url>
+cd Edge-AI-Object
 ```
 
-## Models & Optimizations
-
-| Model | Approach | Why it's included |
-|---|---|---|
-| **MobileNetV2** | Depthwise separable convolutions | Industry-standard efficient architecture |
-| **SqueezeNet** | Fire modules, very small parameter count | Smallest footprint of the three |
-| **YOLOv4-tiny** | Lightweight YOLO variant | Real-time detection with bounding boxes |
-
-Each model is tested under **4 conditions**:
-- **Baseline** — no optimization, reference performance
-- **Quantization** — post-training INT8 quantization
-- **Pruning** — 50% structured sparsity
-- **Combined** — pruning followed by quantization
-
-## Metrics tracked
-
-- 🚀 **FPS** — throughput
-- ⏱️ **Latency (ms)** — per-frame inference time
-- 🎯 **mAP** — detection accuracy
-- 📦 **Model size (MB)** — storage footprint
-- 🔋 **Energy (Joules)** — power efficiency
-- 🖥️ **CPU / RAM usage** — resource overhead
-
-## Quick Start
-
+### Step 2: Run Setup Script
 ```bash
-# 1. Clone the repository
-git clone https://github.com/<your-username>/edge-ai-object-detection.git
-cd edge-ai-object-detection
-
-# 2. Run setup (installs dependencies, creates venv, prepares directories)
 chmod +x setup.sh
 bash setup.sh
+```
+
+This script will:
+- Update system packages
+- Install system dependencies
+- Create Python virtual environment
+- Install all Python packages
+- Enable camera interface (if using Pi Camera)
+- Create required directories
+
+### Step 3: Activate Virtual Environment
+```bash
 source venv/bin/activate
+```
 
-# 3. Download pretrained models
+### Step 4: Download Pre-trained Models
+```bash
 python src/dataset_prepare.py --download-models
+```
 
-# 4. Run a single experiment
-python src/main.py --model mobilenet --optimization baseline --mode single
+---
 
-# 5. Or run the full 12-experiment suite
+## 🚀 Quick Start
+
+### Run a Single Experiment:
+```bash
+python main.py --model mobilenet --optimization baseline --mode single
+```
+
+### Run Full Experiment Suite (all 12 combinations):
+```bash
+python main.py --mode full_experiment
+```
+
+### Or use the automated script:
+```bash
+chmod +x run_experiments.sh
 bash run_experiments.sh
 ```
 
-### Real-time detection with your camera
+### Generate Visualizations Only:
+```bash
+python src/visualization.py --results output/csv/experiment_results.csv
+```
+
+### Run Real-time Inference:
+```bash
+python main.py --model mobilenet --optimization baseline --mode realtime
+```
+
+---
+
+## 📁 Project Structure
+
+```
+Edge-AI-Object/
+├── config.yaml                    # Configuration parameters
+├── requirements.txt               # Python dependencies
+├── setup.sh                       # Installation script
+├── run_experiments.sh             # Automated experiment runner
+├── README.md                      # This file
+│
+├── src/                           # Source code
+│   ├── main.py                    # Entry point & CLI
+│   ├── hardware_monitor.py        # Resource monitoring
+│   ├── model_loader.py            # Model loading utilities
+│   ├── model_optimizer.py         # Optimization functions
+│   ├── evaluator.py               # Benchmarking & metrics
+│   ├── camera_capture.py          # Camera handling
+│   ├── inference_with_boxes.py    # Detection visualization
+│   ├── main_experiment.py         # Experiment orchestration
+│   ├── visualization.py           # Graph generation
+│   └── dataset_prepare.py         # Dataset preparation
+│
+├── models/                        # Saved models
+│   ├── mobilenet_v2.tflite
+│   ├── squeezenet.tflite
+│   └── yolov4-tiny.*
+│
+├── datasets/                      # Dataset storage
+│   ├── pascal_voc/
+│   └── cifar10/
+│
+└── output/                        # Results
+    ├── csv/                       # Experiment results CSV
+    ├── graphs/                    # Visualization PNGs
+    ├── images/                    # Inference images
+    └── logs/                      # Log files
+```
+
+---
+
+## 🧪 Running Experiments
+
+### Command Line Options:
 
 ```bash
-python src/main.py --model squeezenet --optimization baseline --mode realtime --camera usb
+python main.py [OPTIONS]
+
+Options:
+  --model MODEL          Model to use: mobilenet, squeezenet, yolo
+  --optimization OPT     Optimization: baseline, quantization, pruning, combined
+  --mode MODE            Mode: single, full_experiment, realtime, benchmark
+  --dataset DATASET      Dataset: pascal_voc, cifar10
+  --camera CAMERA        Camera: picamera, usb
+  --resolution RES       Resolution: 640x480, 320x240
+  --save_results         Save results to CSV
+  --verbose              Enable debug logging
 ```
 
-## Hardware Requirements
+### Examples:
 
-- Raspberry Pi 4 (4GB RAM minimum, 8GB ideal)
-- MicroSD card (32GB+, Class 10)
-- Pi Camera v2 or USB webcam
-- Heatsinks/fan recommended for sustained inference
-- *(Optional)* Google Coral USB Accelerator for Edge TPU support
+```bash
+# Test MobileNet with quantization
+python main.py --model mobilenet --optimization quantization --mode single
 
-## Project Structure
+# Run YOLO baseline experiment
+python main.py --model yolo --optimization baseline --mode single --save_results
 
-```
-.
-├── src/
-│   ├── main.py                 # CLI entry point
-│   ├── model_loader.py         # Loads MobileNet / SqueezeNet / YOLO
-│   ├── model_optimizer.py      # Quantization & pruning logic
-│   ├── evaluator.py            # Benchmarking & metrics
-│   ├── hardware_monitor.py     # CPU / RAM / energy tracking
-│   ├── camera_capture.py       # Live camera input
-│   ├── inference_with_boxes.py # Bounding box visualization
-│   ├── main_experiment.py      # Runs the full 12-experiment suite
-│   ├── visualization.py        # Generates comparison graphs
-│   └── dataset_prepare.py      # Dataset & model downloads
-├── models/                     # Saved model weights
-├── datasets/                   # PASCAL VOC / CIFAR-10
-├── output/                     # CSV results, graphs, logs, sample images
-├── config.yaml                 # All experiment parameters
-├── setup.sh                    # One-command environment setup
-└── run_experiments.sh          # Runs all 12 experiments automatically
+# Real-time detection with SqueezeNet
+python main.py --model squeezenet --optimization baseline --mode realtime --camera usb
+
+# Custom benchmark with specific dataset
+python main.py --model mobilenet --optimization pruning --mode benchmark --dataset cifar10
 ```
 
-## Sample Output
+---
 
+## 📊 Expected Outputs
+
+### 1. Terminal Output:
 ```
 ========================================
 Edge AI Object Detection Experiment
@@ -141,12 +217,132 @@ Raspberry Pi 4 - Lightweight CNN Evaluation
 ========================================
 ```
 
-Results are saved as CSV data plus 8 comparison graphs (FPS, latency, accuracy-vs-speed, energy heatmap, model size, radar chart, FPS-over-time stability, and a confusion matrix).
+### 2. CSV File (`output/csv/experiment_results.csv`):
+| model | optimization | fps | latency_ms | map_score | model_size_mb | energy_joules | cpu_percent | ram_mb | timestamp |
 
-## Tech Stack
+### 3. Graphs (8 PNG files in `output/graphs/`):
+- `graph_1_fps_comparison.png` - FPS across models & optimizations
+- `graph_2_latency_comparison.png` - Latency comparison
+- `graph_3_accuracy_vs_speed.png` - Accuracy-Speed tradeoff scatter plot
+- `graph_4_energy_heatmap.png` - Energy consumption heatmap
+- `graph_5_model_size.png` - Model size comparison
+- `graph_6_radar_chart.png` - Multi-dimensional performance radar
+- `graph_7_fps_over_time.png` - Real-time FPS stability
+- `graph_8_confusion_matrix.png` - Detection accuracy matrix
 
-`Python` · `TensorFlow Lite` · `OpenCV` · `NumPy` · `Raspberry Pi` · `Model Quantization` · `Model Pruning`
+### 4. Inference Images (`output/images/`):
+- Input images with bounding boxes and labels
+- Timestamp and confidence score overlays
 
-## License
+### 5. Log Files (`output/logs/`):
+- Detailed experiment logs with timestamps
+- Error tracking and debugging information
 
-MIT — see [LICENSE](LICENSE).
+---
+
+## 🔍 Troubleshooting
+
+### Issue: "No module named 'tensorflow'"
+**Solution:** Activate virtual environment:
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Issue: Camera not detected
+**Solution:** 
+```bash
+# Enable camera in raspi-config
+sudo raspi-config
+# Navigate to: Interface Options > Camera > Enable
+
+# Or check USB camera
+ls /dev/video*
+```
+
+### Issue: Out of memory
+**Solution:** 
+- Use lower resolution: `--resolution 320x240`
+- Close other applications
+- Use swap file (if available)
+
+### Issue: Low FPS
+**Solution:**
+- Use TensorFlow Lite models instead of full TensorFlow
+- Apply quantization or pruning optimizations
+- Reduce input resolution
+- Enable multi-threading in config.yaml
+
+### Issue: Models not downloading
+**Solution:**
+```bash
+# Manual download
+python src/dataset_prepare.py --download-models --force
+```
+
+### Issue: Raspberry Pi overheating
+**Solution:**
+- Add heatsinks and fan
+- Reduce continuous inference duration
+- Monitor temperature: `vcgencmd measure_temp`
+
+---
+
+## 📈 Research Metrics
+
+### Performance Metrics:
+1. **FPS (Frames Per Second)** - Throughput measurement
+2. **Latency (ms)** - Inference time per frame
+3. **mAP (Mean Average Precision)** - Detection accuracy (0-1)
+4. **Model Size (MB)** - Storage requirement
+5. **Energy Consumption (Joules)** - Power efficiency
+6. **CPU Usage (%)** - Processing overhead
+7. **RAM Usage (MB)** - Memory footprint
+
+### Evaluation Methodology:
+- Each experiment runs 100+ inference iterations
+- FPS measured over 5-second window
+- Latency averaged over 100 runs
+- mAP calculated on held-out test set
+- Energy estimated using Pi power models
+- Resource usage sampled every 0.1 seconds
+
+---
+
+## 📚 Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@misc{edge-ai-object-2024,
+  title={Comparative Evaluation and Optimisation of Lightweight Convolutional Neural Networks for Real-Time Object Detection on Raspberry Pi Edge Devices},
+  year={2024},
+  howpublished={\url{https://github.com/your-repo/Edge-AI-Object}}
+}
+```
+
+---
+
+## 📄 License
+
+This project is for educational and research purposes.
+
+---
+
+## 👥 Contributors
+
+- Add your name and contact here
+
+---
+
+## 🆘 Support
+
+For issues, questions, or contributions:
+- Open an issue on GitHub
+- Check the troubleshooting section
+- Review log files in `output/logs/`
+
+---
+
+**Happy experimenting! 🚀**
+"# Edge-AI-Object-Detection-CNN-models-for-real-time-object-detection-on-edge-devices" 
