@@ -297,40 +297,6 @@ python src/dataset_prepare.py --download-models --force
 
 ---
 
-## 📚 Citation
-
-If you use this code in your research, please cite:
-
-```bibtex
-@misc{edge-ai-object-2024,
-  title={Comparative Evaluation and Optimisation of Lightweight Convolutional Neural Networks for Real-Time Object Detection on Raspberry Pi Edge Devices},
-  year={2024},
-  howpublished={\url{https://github.com/your-repo/Edge-AI-Object}}
-}
-```
-
----
-
 ## 📄 License
 
 This project is for educational and research purposes.
-
----
-
-## 👥 Contributors
-
-- Add your name and contact here
-
----
-
-## 🆘 Support
-
-For issues, questions, or contributions:
-- Open an issue on GitHub
-- Check the troubleshooting section
-- Review log files in `output/logs/`
-
----
-
-**Happy experimenting! 🚀**
-"# Edge-AI-Object-Detection-CNN-models-for-real-time-object-detection-on-edge-devices" 
