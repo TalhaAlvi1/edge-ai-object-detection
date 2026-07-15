@@ -4,20 +4,6 @@
 
 ---
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Hardware Requirements](#hardware-requirements)
-- [Software Requirements](#software-requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Project Structure](#project-structure)
-- [Running Experiments](#running-experiments)
-- [Expected Outputs](#expected-outputs)
-- [Troubleshooting](#troubleshooting)
-- [Research Metrics](#research-metrics)
-
----
-
 ## 🎯 Overview
 
 This project provides a comprehensive framework for evaluating and optimizing lightweight CNN models for real-time object detection on edge devices, specifically the Raspberry Pi 4. It implements three models with four optimization variants each, resulting in 12 complete experiments with detailed performance metrics.
