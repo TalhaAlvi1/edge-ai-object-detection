@@ -34,6 +34,8 @@ This project provides a comprehensive framework for evaluating and optimizing li
 - **Combined** - Pruning followed by quantization
 
 ---
+## How it works
+<img width="1520" height="315" alt="image" src="https://github.com/user-attachments/assets/80b6f1ee-42e4-43fa-a8b7-ccce9a7fa3f9" />
 
 ## 🔧 Hardware Requirements
 
